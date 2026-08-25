@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-25 10:34:13",
+  "updated_at": "2026-08-25 11:01:05",
   "records": [
     {
       "id": "788491925d37f53d87e8be705faa12a7",
@@ -144,6 +144,51 @@
       "source": "湖北省政府采购网·通知公告",
       "link": "https://www.ccgp-hubei.gov.cn:8030/DP/SY.HTML",
       "deadline": ""
+    },
+    {
+      "id": "44a4bb115a1d3e4385a64139c3af791e",
+      "date": "2026-07-23",
+      "province": "湖北",
+      "title": "湖北机场集团关于公开征集评审专家的公告",
+      "source": "湖北机场集团·评审专家征集",
+      "link": "https://gzjc.ceczy.com/#/contentDetail?name=%E5%B9%B3%E5%8F%B0%E5%8A%A8%E6%80%81&path=%2FserviceCenter%2Fdynamics&id=196",
+      "deadline": "长期有效"
+    },
+    {
+      "id": "fe3dc7b1b658d46f5cb16e253c51abcd",
+      "date": "2026-03-05",
+      "province": "武汉",
+      "title": "东风汽车采购招投标交易平台评标专家社会招募公告",
+      "source": "东风汽车集团·评标专家社会招募",
+      "link": "https://www.dfmc.com.cn/news/announce/news_20260305_1148.html",
+      "deadline": "长期有效"
+    },
+    {
+      "id": "12d29908531bdc639fe630250a1feb82",
+      "date": "2026-02-11",
+      "province": "湖北",
+      "title": "关于湖北水发集团电子招采平台公开征集供应商的公告",
+      "source": "湖北水发集团·电子招采平台",
+      "link": "https://www.hbsfjtgs.com/gonggaoNews.html?id=b4eb1112a846464fa1893c9f53d885a4",
+      "deadline": ""
+    },
+    {
+      "id": "02229bd209807b80eb0e3dc5e1c40710",
+      "date": "2026-02-11",
+      "province": "湖北",
+      "title": "关于湖北水发集团电子招采平台公开征集评标专家的公告",
+      "source": "湖北水发集团·电子招采平台",
+      "link": "https://www.hbsfjtgs.com/gonggaoNews.html?id=7812404abe52487185787d0652a64b95",
+      "deadline": ""
+    },
+    {
+      "id": "61c836c33e295a724ef474ed3acfacf0",
+      "date": "2025-10-31",
+      "province": "武汉",
+      "title": "东风汽车采购招投标交易平台评标专家社会招募补充公告",
+      "source": "东风汽车集团·评标专家社会招募",
+      "link": "https://etp.dfmc.com.cn/tzgg/001003/20251031/d9f7cfdb-a784-49b6-abc8-fc730327b337.html",
+      "deadline": "长期有效"
     }
   ]
 }
