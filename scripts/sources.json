@@ -1,0 +1,26 @@
+{
+  "note": "湖北/武汉专家库数据源配置。每个源每天自动抓取一次，标题命中关键词即入库并推送微信。如需增加省份，按同样格式追加一条即可。",
+  "sources": [
+    {
+      "id": "hb-zjtk",
+      "name": "湖北省综合评标评审专家库·通知公告",
+      "province": "湖北",
+      "url": "https://www.hbggzyfwpt.cn/zjTzgg",
+      "keywords": ["专家", "评标", "征集", "申报", "入库"]
+    },
+    {
+      "id": "wh-ggzy",
+      "name": "武汉市公共资源交易中心·通知公告",
+      "province": "武汉",
+      "url": "http://ggzyfw.wuhan.gov.cn/",
+      "keywords": ["专家", "征集", "评审", "评标"]
+    },
+    {
+      "id": "hb-zfcg",
+      "name": "湖北省政府采购网·通知公告",
+      "province": "湖北",
+      "url": "http://www.ccgp-hubei.gov.cn/",
+      "keywords": ["专家", "评审", "征集"]
+    }
+  ]
+}
