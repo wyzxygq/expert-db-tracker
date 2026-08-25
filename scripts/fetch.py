@@ -142,10 +142,124 @@ def demo_records(source):
     ]
 
 
+def scan_api_source(source, state):
+    """API 源: 调用 JSON 接口获取公告列表(如湖北水发集团电子招采平台)。
+
+    sources.json 中的 api 源示例:
+        {
+          "id": "hb-sfjt", "type": "api",
+          "api": {"url": "...", "method": "POST"},
+          "body": {"pageNumber": 1, "pageSize": 50, "type": "15"},
+          "headers": {"Referer": "..."},
+          "records_path": ["data", "records"],
+          "title_field": "iez8v7sMaminput6qzl",
+          "date_field": "i40s2f3DateA3dt",
+          "id_field": "id",
+          "link_template": "https://www.hbsfjtgs.com/gonggaoNews.html?id={id}"
+        }
+    """
+    seen = state.setdefault("seen", {})
+    fresh = []
+    api = source.get("api", {})
+    url = api.get("url", "")
+    if not url:
+        return fresh
+    log("API 抓取 %s (%s) ..." % (source["name"], url))
+    headers = {"User-Agent": UA, "Content-Type": "application/json"}
+    headers.update(source.get("headers", {}))
+    try:
+        body = json.dumps(source.get("body", {})).encode("utf-8")
+        req = urllib.request.Request(url, data=body, method=api.get("method", "POST"), headers=headers)
+        with urllib.request.urlopen(req, timeout=20) as resp:
+            raw = resp.read().decode("utf-8", errors="ignore")
+        data = json.loads(raw)
+    except urllib.error.HTTPError as e:
+        log("  [失败] HTTP %s" % e.code)
+        return fresh
+    except Exception as e:
+        log("  [失败] %s" % e)
+        return fresh
+
+    records = data
+    for key in source.get("records_path", []):
+        if isinstance(records, dict) and key in records:
+            records = records[key]
+        else:
+            records = []
+            break
+    if not isinstance(records, list):
+        records = []
+    t_field = source.get("title_field", "title")
+    d_field = source.get("date_field", "date")
+    i_field = source.get("id_field", "id")
+    link_tpl = source.get("link_template", "")
+    keywords = source.get("keywords", [])
+
+    for it in records[: source.get("max_records", 50)]:
+        if not isinstance(it, dict):
+            continue
+        title = str(it.get(t_field, "") or "").strip()
+        if not title or not match_keywords(title, keywords):
+            continue
+        date = str(it.get(d_field, "") or "")[:10]
+        rid = str(it.get(i_field, "") or "")
+        link = link_tpl.replace("{id}", rid) if link_tpl else url
+        key = "%s:%s" % (source["id"], rid or link)
+        rec_id = hashlib.md5(key.encode("utf-8")).hexdigest()
+        if rec_id in seen:
+            continue
+        fresh.append({
+            "id": rec_id,
+            "date": date or datetime.now(CST).strftime("%Y-%m-%d"),
+            "province": source.get("province", ""),
+            "title": title,
+            "source": source["name"],
+            "link": link,
+            "deadline": "",
+        })
+    log("  命中新增 %d 条" % len(fresh))
+    return fresh
+
+
+def scan_seed_source(source, state):
+    """种子源: 固定收录已知的长期有效公告(如东风汽车、湖北机场集团征集公告)。
+
+    这些平台公告列表反爬或为 SPA 无法自动发现新条目, 但征集公告长期有效,
+    以固定条目形式收录, 详情页链接可直接访问。
+    """
+    seen = state.setdefault("seen", {})
+    fresh = []
+    for item in source.get("items", []):
+        title = item.get("title", "").strip()
+        link = item.get("link", "").strip()
+        if not title or not link:
+            continue
+        rec_id = make_id(source["id"], link)
+        if rec_id in seen:
+            continue
+        fresh.append({
+            "id": rec_id,
+            "date": item.get("date", "") or datetime.now(CST).strftime("%Y-%m-%d"),
+            "province": source.get("province", ""),
+            "title": title,
+            "source": source["name"],
+            "link": link,
+            "deadline": item.get("deadline", ""),
+        })
+    if fresh:
+        log("种子源 %s: 收录 %d 条" % (source["name"], len(fresh)))
+    return fresh
+
+
 def scan_source(source, state):
     """抓取单个源, 返回新增公告列表。"""
     seen = state.setdefault("seen", {})
     fresh = []
+
+    if source.get("type") == "api":
+        return scan_api_source(source, state)
+    if source.get("type") == "seed":
+        return scan_seed_source(source, state)
 
     if source.get("demo"):
         for rec in demo_records(source):
