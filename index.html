@@ -49,6 +49,7 @@ var FALLBACK = {
 function today() { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0"); }
 function daysLeft(deadline) {
   if (!deadline) return "";
+  if (deadline === "长期有效") return "长期有效";
   var diff = Math.ceil((new Date(deadline) - new Date(today())) / 86400000);
   if (diff < 0) return "已截止";
   if (diff === 0) return "今日截止";
