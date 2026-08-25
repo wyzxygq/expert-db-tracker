@@ -1,5 +1,5 @@
 {
-  "note": "湖北/武汉专家库数据源配置。每个源每天自动抓取一次，标题命中关键词即入库并推送微信。如需增加省份，按同样格式追加一条即可。",
+  "note": "湖北/武汉专家库数据源配置（含政府与央国企）。每个源每天自动抓取一次，标题命中关键词即入库并推送微信。type 缺省=列表页抓取；type=api=JSON接口；type=seed=固定收录长期有效公告。如需增加省份，按同样格式追加一条即可。",
   "sources": [
     {
       "id": "hb-zjtk",
@@ -21,6 +21,59 @@
       "province": "湖北",
       "url": "http://www.ccgp-hubei.gov.cn/",
       "keywords": ["专家", "评审", "征集"]
+    },
+    {
+      "id": "hb-sfjt",
+      "name": "湖北水发集团·电子招采平台",
+      "province": "湖北",
+      "type": "api",
+      "api": {
+        "url": "https://www.hbsfjtgs.com/api/bulletin/find?openToken=f990c42bc8834131b09b4e3bd37cfb75",
+        "method": "POST"
+      },
+      "body": { "pageNumber": 1, "pageSize": 50, "type": "15" },
+      "headers": { "Referer": "https://www.hbsfjtgs.com/gonggaolist.html" },
+      "records_path": ["data", "records"],
+      "title_field": "iez8v7sMaminput6qzl",
+      "date_field": "i40s2f3DateA3dt",
+      "id_field": "id",
+      "link_template": "https://www.hbsfjtgs.com/gonggaoNews.html?id={id}",
+      "keywords": ["专家", "评审", "征集", "招募", "入库", "评标"],
+      "max_records": 50
+    },
+    {
+      "id": "dfmc-seed",
+      "name": "东风汽车集团·评标专家社会招募",
+      "province": "武汉",
+      "type": "seed",
+      "items": [
+        {
+          "title": "东风汽车采购招投标交易平台评标专家社会招募公告",
+          "link": "https://www.dfmc.com.cn/news/announce/news_20260305_1148.html",
+          "date": "2026-03-05",
+          "deadline": "长期有效"
+        },
+        {
+          "title": "东风汽车采购招投标交易平台评标专家社会招募补充公告",
+          "link": "https://etp.dfmc.com.cn/tzgg/001003/20251031/d9f7cfdb-a784-49b6-abc8-fc730327b337.html",
+          "date": "2025-10-31",
+          "deadline": "长期有效"
+        }
+      ]
+    },
+    {
+      "id": "hb-jc-seed",
+      "name": "湖北机场集团·评审专家征集",
+      "province": "湖北",
+      "type": "seed",
+      "items": [
+        {
+          "title": "湖北机场集团关于公开征集评审专家的公告",
+          "link": "https://gzjc.ceczy.com/#/contentDetail?name=%E5%B9%B3%E5%8F%B0%E5%8A%A8%E6%80%81&path=%2FserviceCenter%2Fdynamics&id=196",
+          "date": "2026-07-23",
+          "deadline": "长期有效"
+        }
+      ]
     }
   ]
 }
