@@ -30,6 +30,7 @@ jobs:
       - name: Run collector
         env:
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          SERVERCHAN_SENDKEY: ${{ secrets.SERVERCHAN_SENDKEY }}
         run: python scripts/fetch.py
 
       - name: Commit and push
