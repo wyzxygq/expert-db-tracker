@@ -2,9 +2,9 @@ name: daily-update
 
 on:
   schedule:
-    # 每天北京时间 06:00 / 14:00 / 18:00 自动运行 (UTC 22:00 / 06:00 / 10:00)
-    # 一天 3 次: 降低 GitHub schedule 偶发跳过导致的漏跑风险, 有新公告也能更快推送
-    - cron: '0 22,6,10 * * *'
+    # 每天北京时间 09:00 自动运行一次 (UTC 01:00)
+    # 本机兜底任务在 09:30 跟进, 与云端错开避免 git push 冲突
+    - cron: '0 1 * * *'
   workflow_dispatch:
 
 permissions:
