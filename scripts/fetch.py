@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
-"""专家库动态采集器：每日抓取公告页 -> 关键词筛选 -> 去重 -> 生成 data.json -> 推送微信(PushPlus)。
+"""专家库动态采集器：每日抓取公告页 -> 关键词筛选 -> 去重 -> 生成 data.json -> 推送通知(双通道)。
 
 用法:
     python scripts/fetch.py
 
 环境变量(可选):
-    PUSHPLUS_TOKEN  微信推送 token, 在 https://www.pushplus.plus 微信扫码登录后获取。
-                    GitHub Actions 中通过仓库 Secret 注入。
+    PUSHPLUS_TOKEN      微信推送 token, 在 https://www.pushplus.plus 微信扫码登录后获取。
+    SERVERCHAN_SENDKEY  Server酱(方糖) SendKey, 在 https://sct.ftqq.com 微信扫码登录后获取。
+                        免费版每天 5 条, 覆盖每天 3 次定时任务。
+    两个通道各自独立, 配置了哪个就走哪个, 可同时配置双保险。
+    GitHub Actions 中通过仓库 Secret 注入。
 """
 import hashlib
 import json
@@ -14,6 +17,7 @@ import os
 import re
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from html import unescape
@@ -301,12 +305,10 @@ def scan_source(source, state):
 
 
 def push_wechat(new_records):
+    """PushPlus 通道(可选)。注意: PushPlus 需要账户实名认证, 否则返回 code 905。"""
     token = os.environ.get("PUSHPLUS_TOKEN", "").strip()
     if not token:
-        log("未设置 PUSHPLUS_TOKEN, 跳过微信推送 (本地测试属正常)")
-        return
-    if not new_records:
-        log("无新增, 不推送")
+        log("未设置 PUSHPLUS_TOKEN, 跳过 PushPlus 推送")
         return
     items = "".join(
         '<p><b>[%s]</b> <a href="%s">%s</a><br><span style="color:#888">%s · %s</span></p>'
@@ -326,9 +328,48 @@ def push_wechat(new_records):
     try:
         with urllib.request.urlopen(req, timeout=15) as resp:
             body = resp.read().decode("utf-8", errors="ignore")
-        log("推送结果: %s" % body[:200])
+        log("PushPlus 推送结果: %s" % body[:200])
     except Exception as e:
-        log("推送失败: %s" % e)
+        log("PushPlus 推送失败: %s" % e)
+
+
+def push_serverchan(new_records):
+    """Server酱(方糖) 通道(可选)。免费版每天 5 条, 无需实名, 微信扫码即可。
+    API: POST https://sctapi.ftqq.com/<SENDKEY>.send  (title + desp, desp 支持 Markdown)
+    """
+    sendkey = os.environ.get("SERVERCHAN_SENDKEY", "").strip()
+    if not sendkey:
+        log("未设置 SERVERCHAN_SENDKEY, 跳过 Server酱推送")
+        return
+    lines = []
+    for r in new_records[:20]:
+        lines.append(
+            "**[%s] %s**\n\n%s · %s\n\n%s"
+            % (r["province"] or "未分类", r["title"], r["source"], r["date"], r["link"]))
+    payload = urllib.parse.urlencode({
+        "title": "专家库动态：今日新增 %d 条" % len(new_records),
+        "desp": "\n\n---\n\n".join(lines),
+    }).encode("utf-8")
+    req = urllib.request.Request(
+        "https://sctapi.ftqq.com/%s.send" % sendkey,
+        data=payload,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=15) as resp:
+            body = resp.read().decode("utf-8", errors="ignore")
+        log("Server酱推送结果: %s" % body[:200])
+    except Exception as e:
+        log("Server酱推送失败: %s" % e)
+
+
+def push_notify(new_records):
+    """统一推送入口：无新增不推送；有新增则走所有已配置通道(双保险)。"""
+    if not new_records:
+        log("无新增, 不推送")
+        return
+    push_wechat(new_records)
+    push_serverchan(new_records)
 
 
 def main():
@@ -361,7 +402,7 @@ def main():
     save_json(STATE_FILE, state)
 
     log("本次新增 %d 条, 当前共 %d 条" % (len(new_records), len(data["records"])))
-    push_wechat(new_records)
+    push_notify(new_records)
 
 
 if __name__ == "__main__":
