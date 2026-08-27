@@ -14,7 +14,8 @@
         "gh_token": "github_pat_xxx 或 ghp_xxx",
         "repo": "wyzxygq/expert-db-tracker",
         "branch": "main",
-        "pushplus_token": "pushplus 一对一定推 token"
+        "pushplus_token": "pushplus 一对一定推 token (可选)",
+        "serverchan_sendkey": "Server酱 SendKey, https://sct.ftqq.com (可选)"
     }
 
 日志：项目根目录 local_run.log（追加模式）。
@@ -98,6 +99,7 @@ def main():
         cfg = json.load(f)
     gh_token = cfg["gh_token"].strip()
     pushplus = cfg.get("pushplus_token", "").strip()
+    serverchan = cfg.get("serverchan_sendkey", "").strip()
     branch = cfg.get("branch", "main")
     prefix = cfg["repo"] + "/contents/"
 
@@ -113,9 +115,10 @@ def main():
             f.write(content)
         log("已同步线上 %s (sha=%s...)" % (fname, sha[:10]))
 
-    # 2) 运行采集（fetch.py 负责抓取/去重/写文件/微信推送）
+    # 2) 运行采集（fetch.py 负责抓取/去重/写文件/推送通知）
     env = dict(os.environ)
     env["PUSHPLUS_TOKEN"] = pushplus
+    env["SERVERCHAN_SENDKEY"] = serverchan
     env["PYTHONIOENCODING"] = "utf-8"
     cmd = [sys.executable, os.path.join(HERE, "fetch.py")]
     try:
