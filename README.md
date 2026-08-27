@@ -7,11 +7,19 @@
 - 📱 网页可"添加到手机主屏幕"，像 App 一样打开
 
 ```
-GitHub Actions 定时任务(每日 06:00)
-    └─ 抓取公告页 → 关键词筛选 → 去重
-         ├─ 有新增 → 推送到微信(PushPlus)
+GitHub Actions 定时任务(每日 06:00 / 14:00 / 18:00)
+    └─ 排除名单过滤 → 抓取公告页 → 关键词筛选 → 去重
+         ├─ 有新增 → 推送到微信(Server酱+PushPlus双通道)
          └─ 更新 data.json → GitHub Pages 网页自动刷新
 ```
+
+## 排除法（黑名单）说明
+
+`scripts/excluded_platforms.json` 是**排除名单**：名单内的平台一律不抓取、不推送（用户已自行掌握）。
+
+- 匹配规则：采集源的**名称**或**域名**命中名单任一条 → 整个源跳过
+- 排除名单可以随时增删；想恢复某个平台，从名单里删掉对应条目即可
+- 当前排除 42 个平台；数据源中未命中名单的（如湖北省人社厅、省科技厅、省知产保护中心、武汉市生态环境科技中心等）正常采集推送
 
 ---
 
@@ -19,10 +27,13 @@ GitHub Actions 定时任务(每日 06:00)
 
 ```
 expert-db-tracker/
-├── .github/workflows/daily-update.yml   # 定时任务(每天06:00)
+├── .github/workflows/daily-update.yml   # 定时任务(每天06:00/14:00/18:00)
 ├── scripts/
-│   ├── fetch.py        # 采集+筛选+去重+推送 主脚本
-│   └── sources.json    # 数据源配置（改成你关注的省份公告页）
+│   ├── fetch.py               # 采集+排除过滤+筛选+去重+推送 主脚本
+│   ├── sources.json           # 数据源配置（含名单外专家库源）
+│   ├── excluded_platforms.json# 排除名单(黑名单)：名单内平台不抓不推
+│   ├── local_runner.py        # 本机兜底采集(国内网络直连)
+│   └── .local_config.json     # 本机Token配置(勿提交GitHub)
 ├── index.html          # 展示网页（GitHub Pages 用）
 ├── data.json           # 数据文件（脚本自动更新，网页读取它）
 └── state.json          # 去重记录（脚本自动维护，可忽略）
