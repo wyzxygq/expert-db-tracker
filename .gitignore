@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+
+# 本机兜底配置（含 GitHub / PushPlus Token，严禁提交）
+scripts/.local_config.json
+local_run.log
