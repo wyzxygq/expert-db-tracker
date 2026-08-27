@@ -74,6 +74,66 @@
           "deadline": "长期有效"
         }
       ]
+    },
+    {
+      "id": "hb-rst-seed",
+      "name": "湖北省人社厅·劳动人事争议仲裁专家库",
+      "province": "湖北",
+      "type": "seed",
+      "note": "名单外源: 2026-07-30发布, 截止2026-09-12, 正在开放申请",
+      "items": [
+        {
+          "title": "关于征选湖北省劳动人事争议仲裁专家库成员的公告",
+          "link": "https://rst.hubei.gov.cn/bmdt/dtyw/tzgg/202607/t20260730_5986278.shtml",
+          "date": "2026-07-30",
+          "deadline": "2026-09-12"
+        }
+      ]
+    },
+    {
+      "id": "hb-kjt-seed",
+      "name": "湖北省科技厅·科技计划项目专家库",
+      "province": "湖北",
+      "type": "seed",
+      "note": "名单外源: 专家库实行个人申请常年受理模式",
+      "items": [
+        {
+          "title": "湖北省科技计划项目专家库专家征集(常年受理: 技术/管理/经济/其他类)",
+          "link": "https://kjt.hubei.gov.cn/jhsb/kjzj.html",
+          "date": "2026-02-28",
+          "deadline": "常年受理"
+        }
+      ]
+    },
+    {
+      "id": "hb-ip-seed",
+      "name": "湖北省知识产权保护中心·专家库",
+      "province": "湖北",
+      "type": "seed",
+      "note": "名单外源: 2026年度征集(海外纠纷应对/知识产权保护专家)",
+      "items": [
+        {
+          "title": "2026年度湖北省知识产权保护专家库专家征集(组织推荐, 聘期3年)",
+          "link": "http://hbippc.org.cn/content/4080dfd69bff55e7019c3235193f0001.html",
+          "date": "2026-04-01",
+          "deadline": ""
+        }
+      ]
+    },
+    {
+      "id": "wh-hj-seed",
+      "name": "武汉市生态环境科技中心·环评技术评估专家库",
+      "province": "武汉",
+      "type": "seed",
+      "note": "名单外源: 每年公开征集增补, 面向高校/院所/企事业单位个人",
+      "items": [
+        {
+          "title": "征集武汉市建设项目环境影响技术评估专家库专家(增补与更新, 面向个人公开征集)",
+          "link": "https://hbj.wuhan.gov.cn/fbjd_19/zc/sthjjwj/tzgg/202604/t20260420_2754831.html",
+          "date": "2026-04-20",
+          "deadline": ""
+        }
+      ]
     }
   ]
 }
