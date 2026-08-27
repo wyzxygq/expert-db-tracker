@@ -26,6 +26,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
 STATE_FILE = os.path.join(BASE_DIR, "state.json")
 SOURCES_FILE = os.path.join(BASE_DIR, "scripts", "sources.json")
+EXCLUDED_FILE = os.path.join(BASE_DIR, "scripts", "excluded_platforms.json")
 
 CST = timezone(timedelta(hours=8))
 UA = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
@@ -114,6 +115,46 @@ def load_json(path, default):
         except Exception:
             return default
     return default
+
+
+def load_excluded():
+    """加载排除名单(黑名单): 名单内平台的公告不抓取、不推送。"""
+    return load_json(EXCLUDED_FILE, {}).get("excluded", [])
+
+
+def is_excluded_source(src, excluded):
+    """判断整个采集源是否命中排除名单(按源名称/URL/API域名匹配)。"""
+    if not excluded:
+        return False
+    name = src.get("name", "")
+    url = src.get("url", "")
+    api_url = src.get("api", {}).get("url", "")
+    haystack = (name + " " + url + " " + api_url).lower()
+    for ex in excluded:
+        ex_name = (ex.get("name", "") or "").lower()
+        if ex_name and ex_name in haystack:
+            return True
+        for d in ex.get("domains", []):
+            d = (d or "").lower()
+            if d and d in haystack:
+                return True
+    return False
+
+
+def is_excluded_link(link, excluded):
+    """按公告链接域名判断是否命中排除名单(防 seed/API 源漏网)。"""
+    if not excluded or not link:
+        return False
+    m = re.match(r"https?://([^/:]+)", link)
+    if not m:
+        return False
+    domain = m.group(1).lower()
+    for ex in excluded:
+        for d in ex.get("domains", []):
+            d = (d or "").lower()
+            if d and (d in domain or domain in d):
+                return True
+    return False
 
 
 def save_json(path, obj):
@@ -380,11 +421,18 @@ def main():
 
     data = load_json(DATA_FILE, {"updated_at": "", "records": []})
     state = load_json(STATE_FILE, {"seen": {}})
+    excluded = load_excluded()
+    if excluded:
+        log("排除名单已加载: %d 个平台 (命中即跳过, 不抓取不推送)" % len(excluded))
 
     existing_ids = {r["id"] for r in data.get("records", [])}
     new_records = []
     for src in sources:
+        if is_excluded_source(src, excluded):
+            log("命中排除名单, 跳过源: %s" % src["name"])
+            continue
         fresh = scan_source(src, state)
+        fresh = [r for r in fresh if not is_excluded_link(r.get("link", ""), excluded)]
         for r in fresh:
             if r["id"] not in existing_ids:
                 new_records.append(r)
