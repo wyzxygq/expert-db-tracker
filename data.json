@@ -1,6 +1,33 @@
 {
-  "updated_at": "2026-10-18 13:18:48",
+  "updated_at": "2026-10-19 08:37:15",
   "records": [
+    {
+      "id": "7f48e5d63a6b14fa99b1e1ee48bb89c8",
+      "date": "2026-10-19",
+      "province": "山东",
+      "title": "关于征集省专家库房屋建筑和市政工程评标专家的温馨提示",
+      "source": "山东省综合评标专家库·通知公告",
+      "link": "http://ggzyjy.shandong.gov.cn:80/szjk/tzgg/419.jhtml",
+      "deadline": ""
+    },
+    {
+      "id": "03cd2ed6c04cb03b95576a227b20ecc3",
+      "date": "2026-10-19",
+      "province": "山东",
+      "title": "关于申报山东省公共资源交易综合评标评审专家库房屋建筑和市政工程评标专家 职称有关问题的答复",
+      "source": "山东省综合评标专家库·通知公告",
+      "link": "http://ggzyjy.shandong.gov.cn:80/szjk/tzgg/418.jhtml",
+      "deadline": ""
+    },
+    {
+      "id": "bf60c754e8e21bb4f574944c8555f5e9",
+      "date": "2026-10-19",
+      "province": "山东",
+      "title": "关于征集山东省公共资源交易综合评标评审专家库房屋建筑和市政工程评标专家的通知",
+      "source": "山东省综合评标专家库·通知公告",
+      "link": "http://ggzyjy.shandong.gov.cn:80/szjk/tzgg/414.jhtml",
+      "deadline": ""
+    },
     {
       "id": "810d787ed9938e387daff20237e2c42e",
       "date": "2026-07-30",
